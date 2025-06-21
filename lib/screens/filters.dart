@@ -1,78 +1,29 @@
 import 'package:flutter/material.dart';
 //import 'package:meals/screens/tabs.dart';
 //import 'package:meals/widgets/main_drawer.dart';
+import 'package:meals/providers/filters_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum Filter {
-   glutenFree,
-   lactoseFree,
-   vegan,
-   vegetarian,
-}
 
-class FiltersScreen extends StatefulWidget{
+class FiltersScreen extends ConsumerWidget{
 
-  const FiltersScreen ({super.key,required this.currentFilters});
-
-  final Map<Filter,bool> currentFilters;
-
-  @override
-  State<FiltersScreen> createState() {
- return _FiltersScreenState();
-  }
-}
-
-class _FiltersScreenState extends State<FiltersScreen> {
-  var _glutenFreeFilterSet=false;
-  var _LactoseFreeFilterSet=false;
-  var _VegetrianFilterSet=false;
-  var _VeganFilterSet=false;
-
-@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _glutenFreeFilterSet= widget.currentFilters[Filter.glutenFree]!;
-  _LactoseFreeFilterSet=widget.currentFilters[Filter.lactoseFree]!;
-   _VegetrianFilterSet=widget.currentFilters[Filter.vegetarian]!;
-   _VeganFilterSet=widget.currentFilters[Filter.vegan]!;
-  }
+  const FiltersScreen({super.key});
 
 
   @override    
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref ) {
+   final activeFilters = ref.watch(filtersProvider);
 return Scaffold(
 appBar: AppBar(
  title: const Text('your Filters'),
-
 ),
-//drawer: MainDrawer(onSelectScreen: (identifier){
-  //Navigator.of(context).pop();
-  //if(identifier=='meals'){
-  // Navigator.of(context).push(
-   // MaterialPageRoute(builder: (ctx)=>const TabsScreen()),
-   //);
-  //}
-//}),
-body:PopScope (
-  canPop: false,
-  onPopInvoked: (bool didPop) {
-    if(didPop) return;
-    Navigator.of(context).pop({
-      Filter.glutenFree: _glutenFreeFilterSet,
-      Filter.lactoseFree: _LactoseFreeFilterSet,
-      Filter.vegetarian: _VegetrianFilterSet,
-      Filter.vegan: _VeganFilterSet,
-    });
-  },
-
-  child: Column(
+body:
+  Column(
     children: [
       SwitchListTile(
-        value: _glutenFreeFilterSet,
+        value: activeFilters[Filter.glutenFree]!,
        onChanged: (isChecked) {
-  setState(() {
-    _glutenFreeFilterSet=isChecked;
-  });
+ ref.read(filtersProvider.notifier).setFilter(Filter.glutenFree, isChecked);
    }, 
       title: Text('Gluten-free',
       style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -85,11 +36,9 @@ body:PopScope (
       contentPadding: const EdgeInsets.only(left: 34,right: 22),
       ),
       SwitchListTile(
-        value: _LactoseFreeFilterSet,
+        value: activeFilters[Filter.lactoseFree]!,
        onChanged: (isChecked) {
-  setState(() {
-    _LactoseFreeFilterSet=isChecked;
-  });
+ ref.read(filtersProvider.notifier).setFilter(Filter.lactoseFree, isChecked);
    }, 
       title: Text('Lactose-free',
       style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -102,12 +51,11 @@ body:PopScope (
       contentPadding: const EdgeInsets.only(left: 34,right: 22),
       ),
   SwitchListTile(
-        value: _VegetrianFilterSet,
+      value: activeFilters[Filter.vegetarian]!,
        onChanged: (isChecked) {
-  setState(() {
-    _VegetrianFilterSet=isChecked;
-  });
+ ref.read(filtersProvider.notifier).setFilter(Filter.vegetarian, isChecked);
    }, 
+
       title: Text('Vegetrian',
       style: Theme.of(context).textTheme.titleLarge!.copyWith(
         color: Theme.of(context).colorScheme.onBackground,
@@ -119,11 +67,9 @@ body:PopScope (
       contentPadding: const EdgeInsets.only(left: 34,right: 22),
       ),
       SwitchListTile(
-        value: _VeganFilterSet,
+         value: activeFilters[Filter.vegan]!,
        onChanged: (isChecked) {
-  setState(() {
-    _VeganFilterSet=isChecked;
-  });
+ ref.read(filtersProvider.notifier).setFilter(Filter.vegan, isChecked);
    }, 
       title: Text('Vegan',
       style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -137,7 +83,7 @@ body:PopScope (
       ),
     ],
   ),
-),
+
     );
   }
 }

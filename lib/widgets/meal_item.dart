@@ -31,11 +31,15 @@ String get affordabilityText{
         },
         child: Stack(
           children: [
-            FadeInImage(placeholder: MemoryImage(kTransparentImage), 
-            image: NetworkImage(meal.imageUrl),
-            fit: BoxFit.cover,
-            height: 200,
-            width: double.infinity,),
+            Hero (
+              tag:meal.id ,
+              child: FadeInImage(placeholder: MemoryImage(kTransparentImage), 
+              image: NetworkImage(meal.imageUrl),
+              fit: BoxFit.cover,
+              height: 200,
+              width: double.infinity,
+              ),
+            ),
             Positioned(child: Container(
               color: Colors.black54,
               padding: const EdgeInsets.symmetric(vertical: 6,horizontal: 44),
